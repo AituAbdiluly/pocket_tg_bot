@@ -3,10 +3,13 @@ package main
 import (
 	"log"
 
+	"github.com/AituAbdiluly/pocket_tg_bot/pkg/telegram"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/zhashkevych/go-pocket-sdk"
 )
 
 func main() {
+	// bot init
 	bot, err := tgbotapi.NewBotAPI("1603407543:AAHmGyqZcQaGMmKIabQ38qbIi63JMF694xU")
 	if err != nil {
 		log.Panic(err)
@@ -14,23 +17,14 @@ func main() {
 
 	bot.Debug = true
 
-	log.Printf("Authorized on account %s", bot.Self.UserName)
-
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
-
-	updates, err := bot.GetUpdatesChan(u)
-
-	for update := range updates {
-		if update.Message == nil { // ignore any non-Message Updates
-			continue
-		}
-
-		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
-		msg.ReplyToMessageID = update.Message.MessageID
-
-		bot.Send(msg)
+	// pocket client init
+	pocketClient, err := pocket.NewClient("95913-040972201e73766f6dd110a4")
+	if err != nil {
+		log.Fatal(err)
 	}
+
+		telegramBot := telegram.NewBot(bot, pocketClient, "http://localhost/")
+		if err := telegramBot.Start(); err != nil {
+			log.Fatal(err)
+		}
 }
