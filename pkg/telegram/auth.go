@@ -3,12 +3,18 @@ package telegram
 import (
 	"context"
 	"fmt"
+
+	"github.com/AituAbdiluly/pocket_tg_bot/pkg/repository"
 )
 
 func (b *Bot) generateAuthLink(chatID int64) (string, error) {
 	redirectURL := b.generateRedirectURL(chatID)
 	requestToken, err := b.pocketClient.GetRequestToken(context.Background(), redirectURL)
 	if err != nil {
+		return "", err
+	}
+
+	if err := b.tokenRepository.Save(chatID, requestToken, repository.RequestTokens); err != nil {
 		return "", err
 	}
 
