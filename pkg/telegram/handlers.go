@@ -1,15 +1,15 @@
 package telegram
 
 import (
-	"fmt"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 const (
-	commandStart = "start"
-	replyStartTemplate = "Hey! To save links to your Pocket account, first you need to give an access to it. To do this, follow the link:\n%s"
+	commandStart           = "start"
+	replyStartTemplate     = "Hey! To save links to your Pocket account, first you need to give an access to it. To do this, follow the link:\n%s"
+	replyAlreadyAuthorized = "You have already been authorized. Now you can use Pocket Bot. Send some links :)"
 )
 
 func (b *Bot) handleMessage(message *tgbotapi.Message) {
@@ -22,7 +22,7 @@ func (b *Bot) handleMessage(message *tgbotapi.Message) {
 }
 
 func (b *Bot) handleCommand(message *tgbotapi.Message) error {
-	
+
 	switch message.Command() {
 	case commandStart:
 		return b.handleStartCommand(message)
@@ -32,19 +32,18 @@ func (b *Bot) handleCommand(message *tgbotapi.Message) error {
 }
 
 func (b *Bot) handleStartCommand(message *tgbotapi.Message) error {
-	authLink, err := b.generateAuthLink(message.Chat.ID)
+	_, err := b.getAccessToken(message.Chat.ID)
 	if err != nil {
-		return err
+		return b.initAuthProcess(message)
 	}
 
-	msg := tgbotapi.NewMessage(message.Chat.ID, fmt.Sprintf(replyStartTemplate, authLink))
-
+	msg := tgbotapi.NewMessage(message.Chat.ID, replyAlreadyAuthorized)
 	_, err = b.bot.Send(msg)
 	return err
 }
 
 func (b *Bot) handleUnknownCommand(message *tgbotapi.Message) error {
 	msg := tgbotapi.NewMessage(message.Chat.ID, "No such command :(")
-		_, err := b.bot.Send(msg)
-		return err
+	_, err := b.bot.Send(msg)
+	return err
 }

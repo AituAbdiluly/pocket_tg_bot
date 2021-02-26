@@ -5,6 +5,7 @@ import (
 
 	"github.com/AituAbdiluly/pocket_tg_bot/pkg/repository"
 	"github.com/AituAbdiluly/pocket_tg_bot/pkg/repository/boltdb"
+	"github.com/AituAbdiluly/pocket_tg_bot/pkg/server"
 	"github.com/AituAbdiluly/pocket_tg_bot/pkg/telegram"
 	"github.com/boltdb/bolt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -34,7 +35,16 @@ func main() {
 	tokenRepository := boltdb.NewTokenRepository(db)
 
 	telegramBot := telegram.NewBot(bot, pocketClient, tokenRepository, "http://localhost/")
-	if err := telegramBot.Start(); err != nil {
+
+	authServer := server.NewAuthorizationServer(pocketClient, tokenRepository, "https://t.me/pocket_go_bot")
+
+	go func() {
+		if err := telegramBot.Start(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	if err := authServer.Start(); err != nil {
 		log.Fatal(err)
 	}
 }

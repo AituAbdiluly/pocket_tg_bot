@@ -1,6 +1,7 @@
 package telegram
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/AituAbdiluly/pocket_tg_bot/pkg/repository"
@@ -13,6 +14,18 @@ type Bot struct {
 	pocketClient    *pocket.Client
 	tokenRepository repository.TokenRepository
 	redirectURL     string
+}
+
+func (b *Bot) initAuthProcess(message *tgbotapi.Message) error {
+	authLink, err := b.generateAuthLink(message.Chat.ID)
+	if err != nil {
+		return err
+	}
+
+	msg := tgbotapi.NewMessage(message.Chat.ID, fmt.Sprintf(replyStartTemplate, authLink))
+
+	_, err = b.bot.Send(msg)
+	return err
 }
 
 func NewBot(bot *tgbotapi.BotAPI, pocketClient *pocket.Client, tr repository.TokenRepository, redirectURL string) *Bot {
