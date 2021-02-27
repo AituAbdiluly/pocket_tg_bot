@@ -28,7 +28,7 @@ type Responses struct {
 	Start             string `mapstructure:"start"`
 	AlreadyAuthorized string `mapstructure:"already_authorized"`
 	SavedSuccessfully string `mapstructure:"saved_successfully"`
-	UnknowCommand     string `mapstructure:"unknown_command"`
+	UnknownCommand    string `mapstructure:"unknown_command"`
 }
 
 func Init() (*Config, error) {
@@ -63,10 +63,10 @@ func parseEnv(config *Config) error {
 	if err := viper.BindEnv("token"); err != nil {
 		return err
 	}
-	if err := viper.BindEnv("comsumer_key"); err != nil {
+	if err := viper.BindEnv("consumer_key"); err != nil {
 		return err
 	}
-	if err := viper.BindEnv("rediract_url"); err != nil {
+	if err := viper.BindEnv("redirect_url"); err != nil {
 		return err
 	}
 
