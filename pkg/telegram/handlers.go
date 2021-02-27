@@ -15,31 +15,25 @@ const (
 )
 
 func (b *Bot) handleMessage(message *tgbotapi.Message) error {
-	msg := tgbotapi.NewMessage(message.Chat.ID, "Link is saved to your Pocket.")
 
 	_, err := url.ParseRequestURI(message.Text)
 	if err != nil {
-		msg.Text = "This is not valid link!"
-		_, err = b.bot.Send(msg)
-		return err
+		return errInvalidURL
 	}
 
 	accessToken, err := b.getAccessToken(message.Chat.ID)
 	if err != nil {
-		msg.Text = "You are not authorized! Use command /start to authorize."
-		_, err = b.bot.Send(msg)
-		return err
+		return errUnauthorized
 	}
 
 	if err := b.pocketClient.Add(context.Background(), pocket.AddInput{
 		AccessToken: accessToken,
 		URL:         message.Text,
 	}); err != nil {
-		msg.Text = "Oops, failed to add a the link. Try again later."
-		_, err = b.bot.Send(msg)
-		return err
+		return errUnableToSave
 	}
 
+	msg := tgbotapi.NewMessage(message.Chat.ID, "Link is saved to your Pocket.")
 	_, err = b.bot.Send(msg)
 	return err
 }

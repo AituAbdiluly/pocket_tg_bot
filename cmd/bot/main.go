@@ -14,7 +14,7 @@ import (
 
 func main() {
 	// bot init
-	bot, err := tgbotapi.NewBotAPI("1603407543:AAHmGyqZcQaGMmKIabQ38qbIi63JMF694xU")
+	bot, err := tgbotapi.NewBotAPI("1603407543:AAFJAelxSbEIllRFQ4w6nXBST2yGQC_Y0H8")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -22,7 +22,7 @@ func main() {
 	bot.Debug = true
 
 	// pocket client init
-	pocketClient, err := pocket.NewClient("95913-040972201e73766f6dd110a4")
+	pocketClient, err := pocket.NewClient("96105-a0003575d96d8355c8412d44")
 	if err != nil {
 		log.Fatal(err)
 	}

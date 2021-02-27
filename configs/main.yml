@@ -1,0 +1,16 @@
+db_file: "bot.db"
+
+bot_url: "https://t.me/pocket_go_bot"
+
+messages:
+  responses:
+    start: "Hey! To save links to your Pocket account, first you need to give an access to it. To do this, follow the link:\n%s"
+    already_authorized: "You have already been authorized. Now you can use Pocket Bot. Send some links :)"
+    saved_successfully: "Link is saved to your Pocket."
+    unknown_command: "Unknown command :(\n Please provide valid command."
+  errors:
+    default: "Something went wrong, try again."
+    invalid_url: "This is not valid link!"
+    unauthenticated: "You are not authorized! Use command /start to authorize."
+    unable_to_save: "Oops, failed to add a the link. Try again later."
+
