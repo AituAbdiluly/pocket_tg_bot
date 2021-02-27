@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/AituAbdiluly/pocket_tg_bot/pkg/config"
 	"github.com/AituAbdiluly/pocket_tg_bot/pkg/repository"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/zhashkevych/go-pocket-sdk"
@@ -14,6 +15,8 @@ type Bot struct {
 	pocketClient    *pocket.Client
 	tokenRepository repository.TokenRepository
 	redirectURL     string
+
+	messages config.Messages
 }
 
 func (b *Bot) initAuthProcess(message *tgbotapi.Message) error {
@@ -22,14 +25,14 @@ func (b *Bot) initAuthProcess(message *tgbotapi.Message) error {
 		return err
 	}
 
-	msg := tgbotapi.NewMessage(message.Chat.ID, fmt.Sprintf(replyStartTemplate, authLink))
+	msg := tgbotapi.NewMessage(message.Chat.ID, fmt.Sprintf(b.messages.Start, authLink))
 
 	_, err = b.bot.Send(msg)
 	return err
 }
 
-func NewBot(bot *tgbotapi.BotAPI, pocketClient *pocket.Client, tr repository.TokenRepository, redirectURL string) *Bot {
-	return &Bot{bot: bot, pocketClient: pocketClient, redirectURL: redirectURL, tokenRepository: tr}
+func NewBot(bot *tgbotapi.BotAPI, pocketClient *pocket.Client, tr repository.TokenRepository, redirectURL string, messages config.messages) *Bot {
+	return &Bot{bot: bot, pocketClient: pocketClient, redirectURL: redirectURL, tokenRepository: tr, messages: messages}
 }
 
 func (b *Bot) Start() error {
